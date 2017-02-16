@@ -2,8 +2,75 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Teste</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-	<p style="color: red; background-color: green;">weeee /o/</p>
+	<section id="billsApp" class="container">
+		<header class="row">
+			<div class="col-xs-12">
+				<h1>{{ title }}</h1>
+				<p v-if="bills.length > 0 && toPay > 0" class="toPay">Existem {{ toPay }} contas à pagar.</p>
+				<p v-else-if="bills.length > 0 && toPay == 0" class="allPaid">Todas as contas foram pagas.</p>
+				<p v-else-if="bills.length == 0" class="noBills">Nenhuma conta cadastrada.</p>
+			</div>
+		</header>
+		<aside class="row">
+			<div class="col-xs-12">
+				<button class="btn btn-primary pull-right" @click="newBill">Inserir nova conta</button>
+			</div>
+		</aside>
+		<main class="row">
+			<div id="billsTable" class="col-xs-12" v-if="!showForm">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>id</th>
+							<th>Tipo</th>
+							<th>Valor</th>
+							<th>Vencimento</th>
+							<th>Paga?</th>
+							<th>Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(bill, index) in bills" :class="{paid: bill.paid}">
+							<td>{{ index + 1 }}</td>
+							<td>{{ bill.name }}</td>
+							<td>{{ bill.value | currency }}</td>
+							<td>{{ bill.date_due }}</td>
+							<td>{{ bill.paid | paidBill }}</td>
+							<td>
+								<a href="#" class="btn btn-warning btn-sm" @click.prevent="loadBill(bill)">Editar</a>
+								<a href="#" class="btn btn-danger btn-sm" @click="removeBill(index)">Apagar</a>
+								<a href="#" class="btn btn-success btn-sm" v-if="!bill.paid" @click.prevent="payBill(bill)">Pagar</a>
+								<a href="#" class="btn btn-info btn-sm" v-if="bill.paid" @click.prevent="openBill(bill)">"""Despagar"""</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="addEditBill" class="col-xs-4" v-if="showForm">
+				<form>
+					<div class="form-group">
+						<label for="type">Tipo:</label>
+						<select id="type" class="form-control" v-model="bill.name">
+							<option value="" hidden selected>-- Selecione o tipo de conta --</option>
+							<option v-for="type in names" :value="type">{{ type }}</option>
+						</select>
+						<label for="type">Valor:</label>
+						<input id="value" class="form-control" type="text" v-model="bill.value">
+						<label for="due">Vencimento:</label>
+						<input id="due" class="form-control" type="text" v-model="bill.date_due">
+					</div>
+					<div class="form-group">
+						<div class="col-xs-12"><button class="btn btn-warning pull-right" @click.prevent="addEditBill">Enviar</button></div>
+					</div>
+				</form>
+			</div>
+		</main>
+	</section>
+	<script src="/node_modules/vue/dist/vue.min.js"></script>
+	<script src="/js/billsApp.js"></script>
 </body>
 </html>

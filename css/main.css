@@ -1,0 +1,15 @@
+table.table > tbody > tr.paid {
+	background-color: green;
+}
+
+p.toPay {
+	color: red;
+}
+
+p.allPaid {
+	color: green;
+}
+
+p.noBills {
+	color:  #666;
+}
